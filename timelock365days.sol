@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.22;
 
 contract Timelock365Days {
     constructor() {}
 
     //create a mapping for balance
-    mapping(address => uint256) balances;
+    mapping(address => uint256) private balances;
     //creating a mapping for locktime
-    mapping(address => uint256) LOCKTIME;
+    mapping(address => uint256) private LOCKTIME;
 
     function deposit() external payable {
         require(msg.value != 0, "Deposit amount must be greater than 0");
@@ -22,15 +22,15 @@ contract Timelock365Days {
     }
 
     //Lets verify that the balance has been updated into contract
-    function getBalances(address account) public view returns (uint256) {
+    function getBalances(address account) external view returns (uint256) {
         return balances[account];
     }
 
-    function getTimeLock(address account) public view returns (uint256) {
+    function getTimeLock(address account) external view returns (uint256) {
         return LOCKTIME[account];
     }
 
-    function withdraw() public {
+    function withdraw() external {
         require(balances[msg.sender] != 0, "No Funds Availabe");
         require(
             block.timestamp > LOCKTIME[msg.sender],
@@ -44,7 +44,7 @@ contract Timelock365Days {
         require(sent, "Failed To Send Ether");
     }
 
-    function withdrawTo(address account) public {
+    function withdrawTo(address account) external {
         require(balances[account] != 0, "No Funds Availabe");
         require(
             block.timestamp > LOCKTIME[account],
@@ -58,7 +58,7 @@ contract Timelock365Days {
         require(sent, "Failed To Send Ether");
     }
 
-    function returnThisContract() public view returns (uint256) {
+    function returnThisContract() external view returns (uint256) {
         return address(this).balance;
     }
 }
